@@ -234,7 +234,3 @@ Mỗi module có test class khởi tạo context cơ bản trong `src/test/java/
 - `GatewayApplicationTests`
 - `ServiceRegApplicationTests`
 - `ConfigServerApplicationTests`
-
----
-
-Nếu cần, có thể mở rộng README thêm phần Docker Compose (Postgres + RabbitMQ + Zipkin + toàn bộ service) để chạy one-command cho local/dev team.
