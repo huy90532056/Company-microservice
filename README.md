@@ -59,14 +59,7 @@ Theo các file `application.properties` hiện tại:
 - `companyms`: `8081` (`spring.application.name=company-service`)
 - `jobms`: `8082` (`spring.application.name=job-service`)
 - `reviewms`: `8083` (`spring.application.name=review-service`)
-- `configserver`: chưa set port trong local file, mặc định Spring Cloud Config Server thường là `8888`
-
-Lưu ý quan trọng:
-
-- `jobms` có `spring.config.import=optional:configserver:http://localhost:8080`.
-- Route của gateway đang trỏ `lb://JOB-SERVICE-DEV` cho `/jobs/**`.
-
-Điều này cho thấy dự án đang kỳ vọng có config từ Git repo ngoài (`configserver`) để override một số giá trị theo profile `dev`. Nếu chạy thuần local theo file hiện tại, cần đồng bộ lại các giá trị này để route đúng service.
+- `configserver`: `8888`
 
 ## 5. Điều kiện trước khi chạy
 
@@ -88,8 +81,6 @@ Mặc định source đang dùng:
 
 - username: `postgres`
 - password: `password`
-
-Nếu khác môi trường, sửa lại trong từng `application.properties` hoặc config repo của Config Server.
 
 ## 6. Thứ tự khởi động local
 
@@ -195,8 +186,6 @@ Ví dụ call qua gateway (port 8084):
 - `GET http://localhost:8084/jobs`
 - `GET http://localhost:8084/reviews?companyId=1`
 
-Nếu `/jobs/**` lỗi route, kiểm tra lại tên service đăng ký Eureka của `jobms` và route id trong gateway cho khớp.
-
 ## 9. Messaging (RabbitMQ)
 
 Queue dùng chung:
@@ -215,22 +204,3 @@ Luồng event:
 - Mỗi service có tích hợp Actuator
 - Tracing bật sampling `1.0`
 - Có dependency Zipkin reporter
-
-Tối thiểu có thể kiểm tra health endpoint của service (tuỳ cấu hình expose endpoint ở từng service).
-
-## 11. Những điểm cần đồng bộ khi chạy thực tế
-
-- Đồng bộ `spring.config.import` của `jobms` với port Config Server thật.
-- Đồng bộ route `/jobs/**` trong gateway với tên service đăng ký Eureka thực tế (`job-service` hay `job-service-dev`).
-- Cân nhắc đổi `spring.jpa.hibernate.ddl-auto=create-drop` sang `update`/`validate` khi không muốn mất dữ liệu sau mỗi lần restart.
-
-## 12. Kiểm thử
-
-Mỗi module có test class khởi tạo context cơ bản trong `src/test/java/...`:
-
-- `CompanymsApplicationTests`
-- `JobmsApplicationTests`
-- `ReviewmsApplicationTests`
-- `GatewayApplicationTests`
-- `ServiceRegApplicationTests`
-- `ConfigServerApplicationTests`
